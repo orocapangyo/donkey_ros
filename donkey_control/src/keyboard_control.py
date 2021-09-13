@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 """
-Node for control PCA9685 using AckermannDriveStamped msg 
+Node for control PCA9685 using teleop_twist_keyboard msg 
 referenced from donekycar
 url : https://github.com/autorope/donkeycar/blob/dev/donkeycar/parts/actuator.py
 """
@@ -9,9 +9,15 @@ url : https://github.com/autorope/donkeycar/blob/dev/donkeycar/parts/actuator.py
 import time
 import rospy
 from threading import Thread
-from ackermann_msgs.msg import AckermannDriveStamped
+from geometry_msgs.msg import Twist
 
-STEER_CENTER=380
+STEER_CENTER = 380
+STEER_STEP = -10
+STEER_LIMIT = 100
+SPEED_STEP = 1024
+
+speed_pulse = 0
+steering_pulse = STEER_CENTER
 
 class PCA9685:
     """
@@ -138,17 +144,36 @@ class Vehicle(object):
         
         self._name = name
         self._teleop_sub = rospy.Subscriber(
-            "/donkey_teleop",
-            AckermannDriveStamped,
-            self.joy_callback,
+            "/cmd_vel",
+            Twist,
+            self.keyboard_callback,
             queue_size=1,
             buff_size=2 ** 24,
         )
-        rospy.loginfo("Teleop Subscriber Awaked!! Waiting for joystick...")
+        rospy.loginfo("Keyboard Subscriber Awaked!! Waiting for keyboard...")
 
-    def joy_callback(self, msg):
-        speed_pulse = msg.drive.speed
-        steering_pulse = msg.drive.steering_angle
+    def keyboard_callback(self, msg):
+
+        global speed_pulse
+        global steering_pulse
+        rospy.loginfo("Received a /cmd_vel message!")
+        rospy.loginfo("Linear Components: [%f, %f, %f]"%(msg.linear.x, msg.linear.y, msg.linear.z))
+        rospy.loginfo("Angular Components: [%f, %f, %f]"%(msg.angular.x, msg.angular.y, msg.angular.z))
+
+        # Do velocity processing here:
+        # Use the kinematics of your robot to map linear and angular velocities into motor commands
+        speed_pulse += msg.linear.x*SPEED_STEP
+
+        if speed_pulse > 4095 :
+           speed_pulse = 4095
+        if speed_pulse < -4095 :
+           speed_pulse = -4095       
+
+        steering_pulse += msg.angular.z*STEER_STEP
+        if steering_pulse > (STEER_CENTER + STEER_LIMIT) :
+           steering_pulse = STEER_CENTER + STEER_LIMIT
+        if steering_pulse < (STEER_CENTER - STEER_LIMIT) :
+           steering_pulse = STEER_CENTER - STEER_LIMIT
 
         print(
             "speed_pulse : "
