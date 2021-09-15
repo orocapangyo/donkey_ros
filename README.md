@@ -1,6 +1,6 @@
 # ROS1 Donkey(제시카)
 
-## Waveshare Jetracer with ROS1 + Donkeycar!!
+## Waveshare Jetracer with ROS Molodic + Donkeycar!!
 
 로드밸런스팀 김수영씨 아래 코드를 가져와서 수정해서 만들고 있습니다.
 
@@ -19,7 +19,7 @@ But, It's written in Korean. Anyway, Here's the link
 
 ## Tested System information
 
-**Jetson Nano 4GB**
+**Jetson Nano 4GB + IMX219 160**
 
 * Ubuntu 18.04
 * ROS Melodic
@@ -37,7 +37,6 @@ But, It's written in Korean. Anyway, Here's the link
 ├── Images
 ├── LICENSE
 ├── README.md
-└── STL_Files
 ```
 
 ## Prerequisite
