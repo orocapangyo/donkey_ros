@@ -10,7 +10,7 @@ https://github.com/Road-Balance/donkey_ros
     <img src="./Images/joy_control.gif" width="400" />
     <img src="./Images/keyboard_control.gif" width="400" />
     <img src="./Images/blob_tracking.gif" width="400" />
-    <img src="./Images/yolo_control.gif" width="500" />
+    <img src="./Images/yolo_control.gif" width="400" />
 </p>
 
 There's Notion Lecture Notes and Youtube video's about this project. 
