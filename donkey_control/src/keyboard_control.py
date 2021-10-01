@@ -82,9 +82,6 @@ class PWMThrottle:
     Wrapper over a PWM motor cotnroller to convert -1 to 1 throttle
     values to PWM pulses.
     """
-    MIN_THROTTLE = -1
-    MAX_THROTTLE =  1
-
     def __init__(self, controller=None,
                        max_pulse=4095,
                        min_pulse=-4095,
@@ -102,11 +99,8 @@ class PWMThrottle:
 
 
     def run(self, throttle):
+        pulse = int(throttle)
         if throttle > 0:
-            #pulse = map_range(throttle,
-            #                        0, self.MAX_THROTTLE,
-            #                        self.zero_pulse, self.max_pulse)
-            pulse = int(throttle)
             self.controller.pwm.set_pwm(self.controller.channel,0,pulse)
             self.controller.pwm.set_pwm(self.controller.channel+1,0,0)
             self.controller.pwm.set_pwm(self.controller.channel+2,0,4095)
@@ -116,10 +110,6 @@ class PWMThrottle:
             self.controller.pwm.set_pwm(self.controller.channel+6,0,0)
             self.controller.pwm.set_pwm(self.controller.channel+5,0,4095)
         else:
-            #pulse = map_range(throttle,
-            #                        self.MIN_THROTTLE, 0,
-            #                        self.min_pulse, self.zero_pulse)
-            pulse = int(throttle)
             self.controller.pwm.set_pwm(self.controller.channel,0,-pulse)
             self.controller.pwm.set_pwm(self.controller.channel+2,0,0)
             self.controller.pwm.set_pwm(self.controller.channel+1,0,4095)
